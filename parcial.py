@@ -31,7 +31,7 @@ def menu_principal()->None:
                 if(buscar_jugador_por_nombre_y_logros(lista_jugadores) == -1):
                     print("No se encontro al jugador")
             case '5':
-                promedio_de_puntos =sacar_promedio(lista_aux,"estadisticas" , "promedio_puntos_por_partido")
+                promedio_de_puntos = sacar_promedio(lista_aux,"estadisticas" , "promedio_puntos_por_partido")
                 print("El promedio es: {0}".format(promedio_de_puntos))
                 lista_aux = ordenar_por_nombre(lista_aux, "asc", "nombre")
                 if(lista_aux != -1):
@@ -68,7 +68,15 @@ def menu_principal()->None:
             case '20':
                 ordenar_jugadores_por_posicion(lista_aux, "posicion", "estadisticas", "porcentaje_tiros_de_campo")
             case '21':
-                pass
+                crear_csv_jugadores_ranking("ranking_jugadores.csv", lista_aux)
+            case '22':
+                contar_por_tipo_posicion(lista_aux)
+            case '23':
+                mostar_lista_All_Star(lista_aux)
+            case '24':
+                mostrar_mejores_estadisticas(lista_aux)
+            case '25':
+                comparar_estadisticas(lista_aux)
             case '0':
                 print("Hasta Luego!!")
                 break
@@ -81,9 +89,9 @@ def validar_opciones_de_menu()->str:
     Parametros: No recibe ningun parametro.
     Retorna: Retorna la opcion que cumple con el requerimiento del menu y en caso de que no devuelve un "-1".
     '''
-    print("\nMenu Principal\n1. Mostrar la lista de todos los jugadores del Dream Team.\n2. Seleccionar un jugador por su índice.\n3. Guardar estadísticas del punto anterior en un archivo CSV.\n4. Buscar un jugador por su nombre y mostrar sus logros.\n5. Calcular el promedio de puntos, ordenado por nombre de manera ascendente.\n6. Ingresar un jugador y saber si es miembro del Salón de la Fama.\n7. Calcular el jugador con la mayor cantidad de rebotes totales.\n8. Calcular el jugador con el mayor porcentaje de tiros de campo.\n9. Calcular el jugador con la mayor cantidad de asistencias totales.\n10. Ingresar un valor y mostrar los jugadores que han promediado más puntos por partido\n11. Ingresar un valor y mostrar los jugadores que han promediado más rebotes por partido que ese valor.\n12. Ingresar un valor y mostrar los jugadores que han promediado más asistencias por partido que ese valor.\n13. Calcular el jugador con la mayor cantidad de robos totales.\n14. Calcular el jugador con la mayor cantidad de bloqueos totales.\n15. Ingresar un valor y mostrar los jugadores que hayan tenido un porcentaje de tiros libres superior\n16. Calcular el promedio de puntos por partido del equipo excluyendo al jugador con la menor cantidad de puntos por partido.\n17. Calcular el jugador con la mayor cantidad de logros obtenidos.\n18. Ingresar un valor y mostrar los jugadores que hayan tenido un porcentaje de tiros triples superior.\n19. Calcular el jugador con la mayor cantidad de temporadas jugadas.\n20. Ingresar un valor y mostrar los jugadores, ordenados por posición en la cancha, que hayan tenido un porcentaje de tiros de campo superior.\n21. BONUS\n0. Salir.")
+    print("\nMenu Principal\n1. Mostrar la lista de todos los jugadores del Dream Team.\n2. Seleccionar un jugador por su índice.\n3. Guardar estadísticas del punto anterior en un archivo CSV.\n4. Buscar un jugador por su nombre y mostrar sus logros.\n5. Calcular el promedio de puntos, ordenado por nombre de manera ascendente.\n6. Ingresar un jugador y saber si es miembro del Salón de la Fama.\n7. Calcular el jugador con la mayor cantidad de rebotes totales.\n8. Calcular el jugador con el mayor porcentaje de tiros de campo.\n9. Calcular el jugador con la mayor cantidad de asistencias totales.\n10. Ingresar un valor y mostrar los jugadores que han promediado más puntos por partido\n11. Ingresar un valor y mostrar los jugadores que han promediado más rebotes por partido que ese valor.\n12. Ingresar un valor y mostrar los jugadores que han promediado más asistencias por partido que ese valor.\n13. Calcular el jugador con la mayor cantidad de robos totales.\n14. Calcular el jugador con la mayor cantidad de bloqueos totales.\n15. Ingresar un valor y mostrar los jugadores que hayan tenido un porcentaje de tiros libres superior\n16. Calcular el promedio de puntos por partido del equipo excluyendo al jugador con la menor cantidad de puntos por partido.\n17. Calcular el jugador con la mayor cantidad de logros obtenidos.\n18. Ingresar un valor y mostrar los jugadores que hayan tenido un porcentaje de tiros triples superior.\n19. Calcular el jugador con la mayor cantidad de temporadas jugadas.\n20. Ingresar un valor y mostrar los jugadores, ordenados por posición en la cancha, que hayan tenido un porcentaje de tiros de campo superior.\n21. BONUS\n22. La cantidad de jugadores que hay por cada posición\n23. Lista de los jugadores All_Star.\n24. Cual es el mejor jugador en cada estadistica.\n25. El jugador que tiene la mejores estadisticas.\n0. Salir.")
     opcion = input("Ingrese una opcion: ")
-    analizar = re.match("^([0-9]|1[0-9]|2[0-1])$",opcion)
+    analizar = re.match("^([0-9]|1[0-9]|2[0-5])$",opcion)
     if(analizar != None):
         return opcion
     else:
@@ -96,7 +104,7 @@ def leer_json(nombre_archivo:str):
     -nombre_archivo(str): El nombre del archivo con el cual se busca.
     Retorno: Retorna una lista con los diccionarios extraidos del archivo json, ecaso de error retorna -1.
     '''
-    lista= []
+    lista = []
     retorno = -1
     if(nombre_archivo == None):
         return retorno
@@ -245,7 +253,7 @@ def buscar_jugador_por_nombre_y_logros(lista:list)->int:
 #------------------------------------------------------- Punto 5
 def sacar_promedio(lista:list, key:str, clave:str)->float:
     '''
-    Funcion: Esta funcion se encarga de sacar el promedio de la key pasada por parametro y lo imprime.
+    Funcion: Esta funcion se encarga de sacar el promedio de las keys pasada por parametro.
     Parametros: 
     -lista(list): Una lista de diccionario que cada elemento tiene su clave y valor para ser analizada.
     -key(str): La clave que nos permite acceder a diccionarios.
@@ -270,7 +278,7 @@ def sacar_promedio(lista:list, key:str, clave:str)->float:
 
 def ordenar_por_nombre(lista:list, orden:str, key:str)->list:
     '''
-    Funcion: Esta funcion se encarga de ordenar la lista recibida tanto de manera ascendente como de manera descendente y segunla clave a ordenar
+    Funcion: Esta funcion se encarga de ordenar la lista recibida tanto de manera ascendente como de manera descendente y segun la clave a ordenar
     Parametros:
     -lista(list): Una lista de diccionario que cada elemento tiene su clave y valor para ser analizada.
     -orden(str): Parametro que nos sirve para saber en que forma (ascendente/descendente) sera guardada la lista.
@@ -462,7 +470,7 @@ def ingresar_valor(lista:list,key:str, clave:str)->float:
         return retorno
     else:
         numero = input("Ingrese valor({0}-{1}): ".format(minimo, maximo))
-        validar = re.search("^[0-9]+([.])?([0-9]+)?$", numero)
+        validar = re.search(r"[0-9]+(\.[0-9]+)?$", numero)
         if(validar != None):
             numero = float(numero)
             if(numero <=  maximo and numero >= minimo):
@@ -470,10 +478,11 @@ def ingresar_valor(lista:list,key:str, clave:str)->float:
             else:
                 while(numero > maximo or numero < minimo):
                     numero = input("Reingrese valor({0}-{1}): ".format(minimo, maximo))
-                    validar = re.search("^(?:0|[1-9][0-9]?|100)$", numero)
+                    validar = re.search(r"[0-9]+(\.[0-9]+)?$", numero)
                     if(validar != None):
                         numero = float(numero)
-                return numero
+                        if(numero <=  maximo and numero >= minimo):
+                            return numero
         else:
             return retorno
 
@@ -619,5 +628,238 @@ def ordenar_jugadores_por_posicion(lista:list, key:str, segunda_key:str, clave:s
         imprimir_jugadores(nueva_lista, "posicion")
         return nueva_lista
 
+#------------------------------------------------------- Punto 21
+def calcular_ranking_posiciones(lista:list)->list:
+    '''
+    Funcion:La función se encarga de calcular el ranking de posiciones para cada estadística en la lista de jugadores.
+    Parametros:
+    -lista(list): Una lista de diccionario que cada elemento tiene su clave y valor para ser analizada.
+    Retorno: Retorna una lista de jugadores ordenada, en caso de error, retorna -1.
+    '''
+    retorno = -1
+    if(lista == []):
+        return retorno
+    else:
+        lista_estaditicas = ["puntos_totales", "rebotes_totales", "asistencias_totales", "robos_totales"]
+        for estadistica in lista_estaditicas:
+            lista_odenada = ordenar_por_x(lista,"des","estadisticas",estadistica)
+            jugadores_con_estadistica = []
+            for indice in range(len(lista_odenada)):
+                jugador = lista_odenada[indice]
+                nombre = jugador["nombre"]
+                jugador["estadisticas"][estadistica] = indice + 1
+                jugador_modificado = {"nombre":nombre,"estadisticas":jugador["estadisticas"]}
+                jugadores_con_estadistica.append(jugador_modificado)
+        print(jugadores_con_estadistica)
+        return jugadores_con_estadistica
+
+
+def generar_texto_ranking(lista:list)->str:
+    '''
+    Funcion: La función se encarga de generar un texto con las estadísticas de los jugadores en formato CSV.
+    Parametros:
+    -lista(list): Una lista de diccionario que cada elemento tiene su clave y valor para ser analizada.
+    Retorno: Retorna un texto con el ranking de jugadores, en caso de error retorna -1.
+    '''
+    retorno = -1
+    if(lista == []):
+        return retorno
+    else:
+        lista_ranking = calcular_ranking_posiciones(lista)
+        lista_claves = ["Nombre","Puntos","Rebotes","Asistencias","Robos"]
+        filas = []
+        for jugador in lista_ranking:
+            valores = [str(jugador["nombre"]), str(jugador["estadisticas"]["puntos_totales"]), str(jugador["estadisticas"]["rebotes_totales"]), str(jugador["estadisticas"]["asistencias_totales"]), str(jugador["estadisticas"]["robos_totales"])]
+            fila = ",".join(valores)
+            filas.append(fila)
+        claves = ",".join(lista_claves)
+        datos = "{0}\n{1}".format(claves,"\n".join(filas))
+        return datos
+    
+def crear_csv_jugadores_ranking(nombre_archivo:str, lista:list)->int:
+    '''
+    Funcion: La función se encarga de crear un archivo CSV con el ranking de jugadores y sus posiciones de estadísticas.
+    Parametros:
+    -nombre_archivo(str): Nombre por el cual se guarda el archivo CSV.
+    -lista(list): Una lista de diccionario que cada elemento tiene su clave y valor para ser analizada.
+    Retorno: Retorna -1 en caso de error.
+    '''
+    retorno = -1
+    if(nombre_archivo == None or lista == []):
+        return retorno
+    else:
+        texto = generar_texto_ranking(lista)
+        with open(nombre_archivo, "w+") as archivo:
+            archivo.write(texto)
+        print("Se creo el archivo {0}".format(nombre_archivo))
+
+
+
+#------------------------------------------------------- Puntos extra
+#------------------------------------------------------- Punto 22
+def contar_por_tipo_posicion(lista:list)->dict:
+    '''
+    Funcion: Esta funcion permite recorrer la lista e ir contabilizando que jugador tiene algun tipo de clave (posicion) diferente. 
+    Parametros:
+    -lista(list): Una lista de diccionario que cada elemento tiene su clave y valor para ser analizada.
+    Retorno: Retorna un diccionario con la posiciones como clave y la cantidad de jugadores en ese puesto como valor, en caso de error, retorna -1.
+    '''
+    retorno = -1
+    dic_posicion = {}
+    if(lista == []):
+        return retorno
+    else:
+        for jugador in lista:
+            if(jugador["posicion"] in dic_posicion):
+                dic_posicion[jugador["posicion"]] += 1
+            else:
+                dic_posicion[jugador["posicion"]] = 1
+        for deportista, valor in dic_posicion.items():
+            print("{0}:{1}".format(deportista, valor))
+        return dic_posicion 
+
+
+#------------------------------------------------------- Punto 23
+def obtener_jugadores_All_Star(lista:list):
+    '''
+    Funcion: Esta funcion se encarga de crear una lista nueva con los jugadores que pertenecieron al equipo All-Star de la temporada.
+    Parametros:
+    -lista(list): Una lista de diccionario que cada elemento tiene su clave y valor para ser analizada.
+    Retorno: Retorna una lista con los jugadores All-Star, en caso de error, devuelve -1.
+    '''
+    retorno = -1
+    if(lista == []):
+        return retorno 
+    else:
+        jugadores_all_star = []
+        for jugador in lista:
+            logros = jugador['logros']
+            for logro in logros:
+                if 'All-Star' in logro:
+                    jugadores_all_star.append(jugador)
+                    break
+    return jugadores_all_star
+        
+
+def ordenar_por_All_Star(lista:list):
+    '''
+    Funcion: Ordena una lista de diccionarios según el número de veces que cada jugador ha sido seleccionado para el All-Star.
+    Parametros:
+    -lista(list): Una lista de diccionario que cada elemento tiene su clave y valor para ser analizada.
+    Retorno: Una lista ordenada descendientemente según el número de selecciones al All-Star o en caso de error retorna -1.
+    '''
+    retorno = -1
+    if(lista == []):
+        return retorno 
+    else:
+        jugadores_All_Star = obtener_jugadores_All_Star(lista)
+        jugadores = []
+        for jugador in jugadores_All_Star:
+            logros = jugador['logros']
+            count_all_star = 0
+            for logro in logros:
+                matches = re.findall(r'(\d+)\s+veces\s+All-Star', logro)
+                if matches:
+                    count_all_star += int(matches[0])
+            jugadores.append((jugador['nombre'], count_all_star))
+    
+        jugadores = sorted(jugadores, key=lambda x: x[1], reverse=True)
+    return jugadores
+
+def mostar_lista_All_Star(lista:list):
+    '''
+    Funcion: Imprime el nombre del jugador con el numero de las veces que el jugador fue All-Star.
+    Parametros:
+    -lista(list): Una lista de diccionario que cada elemento tiene su clave y valor para ser analizada.
+    Retorno: Retorna -1 en caso de error.
+    '''
+    retorno = -1
+    if(lista == []):
+        return retorno 
+    else:
+        jugadores = ordenar_por_All_Star(lista)
+        for jugador in jugadores:
+            print("{0} ({1} veces All-Star)".format(jugador[0], jugador[1]))
+
+#------------------------------------------------------- Punto 24
+def obtener_mejor_jugador_por_valor(lista:list, valor:str):
+    '''
+    Funcion: Encuentra el mejor jugador en una lista de diccionarios según un valor específico.
+    Parametros:
+    -lista(list): Una lista de diccionario que cada elemento tiene su clave y valor para ser analizada.
+    -valor(str): La clave por la cual va a ir iterando para llegar al mejor jugador en esa caracteristicas.
+    Retorno: El nombre del mejor jugador y el valor máximo alcanzado en la característica especificada o en caso de error devuelve -1.
+    '''
+    retorno = -1
+    mejor_jugador = None
+    max_valor = 0
+    if(lista == [] or valor == None):
+        return retorno
+    else:
+        for jugador in lista:
+            estadisticas = jugador["estadisticas"]
+            if estadisticas[valor] > max_valor:
+                max_valor = estadisticas[valor]
+                mejor_jugador = jugador["nombre"]
+    return mejor_jugador, max_valor
+
+def mostrar_mejores_estadisticas(lista:list)->None:
+    '''
+    Funcion: Muestra las mejores estadísticas de los jugadores en una lista de diccionarios.
+    Parametros:
+    -lista(list): Una lista de diccionario que cada elemento tiene su clave y valor para ser analizada.
+    Retorno: Retorna -1 en caso de error.
+    '''
+    retorno = -1
+    if(lista == []):
+        return retorno
+    else:
+        valores = {
+            "temporadas": "Mayor cantidad de temporadas",
+            "puntos_totales": "Mayor cantidad de puntos totales",
+            "rebotes_totales": "Mayor cantidad de rebotes totales",
+            "asistencias_totales": "Mayor cantidad de asistencias totales",
+            "robos_totales": "Mayor cantidad de robos totales",
+            "bloqueos_totales": "Mayor cantidad de bloqueos totales",
+            "porcentaje_tiros_de_campo": "Mayor porcentaje de tiros de campo",
+            "porcentaje_tiros_libres": "Mayor porcentaje de tiros libres",
+            "porcentaje_tiros_triples": "Mayor porcentaje de tiros triples"
+        }
+        for valor, descripcion in valores.items():
+            mejor_jugador, max_valor = obtener_mejor_jugador_por_valor(lista, valor)
+            print("{0}: {1} ({2})".format(descripcion, mejor_jugador, max_valor))
+
+
+#------------------------------------------------------- Punto 25
+def comparar_estadisticas(lista:list)->str:
+    '''
+    Funcion: Esta funcion se encarga de sumar todas las estadisticas de cada jugador y comparar, para llegar al que mejor puntuacion tiene.
+    Parametros:
+    -lista(list): Una lista de diccionario que cada elemento tiene su clave y valor para ser analizada.
+    Retorno: Retorna el nombre del jugador con mejor puntuacion, en caso de error, devuelve -1.
+    '''
+    retorno = -1
+    mejor_jugador = None
+    mejor_estadistica = 0
+    if(lista == None):
+        return retorno
+    else:
+        for jugador in lista:
+            estadisticas = jugador['estadisticas']
+            puntos_totales = estadisticas['puntos_totales']
+            rebotes_totales = estadisticas['rebotes_totales']
+            asistencias_totales = estadisticas['asistencias_totales']
+            promedio_puntos_por_partido = estadisticas['promedio_puntos_por_partido']
+            promedio_rebotes_por_partido = estadisticas['promedio_rebotes_por_partido']
+            promedio_asistencias_por_partido = estadisticas['promedio_asistencias_por_partido']
+
+            puntuacion = puntos_totales + rebotes_totales + asistencias_totales + promedio_puntos_por_partido + promedio_rebotes_por_partido + promedio_asistencias_por_partido
+
+            if puntuacion > mejor_estadistica:
+                mejor_estadistica = puntuacion
+                mejor_jugador = jugador['nombre']
+
+    print("El mejor jugador es {0} con {1} de puntuacion".format(mejor_jugador, mejor_estadistica))
+    return mejor_jugador
 
 menu_principal()
